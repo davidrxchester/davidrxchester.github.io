@@ -34,8 +34,8 @@ enableRobotsTXT = true
 
   [params.author]
     name = "david"
-    #avatar = "images/avatar.jpg"
-    #avatarSize = "size-m"
+    avatar = ""
+    avatarSize = "size-m"
     email = ""
     avatarFirst = false
   
