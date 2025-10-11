@@ -1,11 +1,11 @@
 {{ define "title" }}
-  {{ .Title }} | {{ .Site.Params.author.name }}
+  {{ .Name | lower }} | {{ .Site.Params.author.name }}
 {{ end }}
 
 {{ define "main" }}
 <div>
   <div class="listHeader">
-    <h1>{{ .Name }}</h1>
+    <h1>{{ .Name | lower }}</h1>
   </div>
 
   {{ with .Content }}

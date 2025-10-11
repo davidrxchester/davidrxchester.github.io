@@ -1,10 +1,10 @@
 {{ define "title"}}
-{{ .Title }} | {{ .Site.Params.author.name }}
+{{ .Name | lower}} | {{ .Site.Params.author.name }}
 {{ end }}
 
 {{ define "main" }}
 <div class="postWrapper">
-    <h1>{{ .Title }}</h1>
+    <h1>{{ .Name | lower }}</h1>
     {{ if .Description}}
     	<p>{{.Description}}</p>
     {{ end }}
