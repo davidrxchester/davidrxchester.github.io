@@ -31,6 +31,9 @@ enableRobotsTXT = true
   showAuthors = true
   showCategories = true
   description = "Welcome to my security blog. Feel free to connect with me below :)"
+
+  [params.styles]
+    color = "cyan"
   
   [params.author]
     name = "david"
