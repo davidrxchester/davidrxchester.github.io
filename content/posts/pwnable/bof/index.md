@@ -3,7 +3,7 @@ title = "want to overflow buffers?"
 date = "2024-08-09T23:32:00-04:00"
 draft = false
 categories = ["pwnable"]
-featured_image = "img/buff_ovf.svg"
+tags = ["buffer-overflow","reverse-engineering"]
 +++
 
 

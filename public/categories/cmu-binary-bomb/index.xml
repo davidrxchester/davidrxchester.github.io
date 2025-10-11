@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Cmu Binary Bomb on Welcome to my blog!</title>
+    <title>Cmu-Binary-Bomb on Welcome to my blog!</title>
     <link>http://localhost:1313/categories/cmu-binary-bomb/</link>
-    <description>Recent content in Cmu Binary Bomb on Welcome to my blog!</description>
+    <description>Recent content in Cmu-Binary-Bomb on Welcome to my blog!</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 16 Aug 2024 15:16:00 -0400</lastBuildDate>
+    <lastBuildDate>Sat, 17 Aug 2024 23:27:00 -0400</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/cmu-binary-bomb/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>cmu binary bomb phase 5</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</link>
+      <pubDate>Sat, 17 Aug 2024 23:27:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>cmu binary bomb phase 4</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</link>
+      <pubDate>Fri, 16 Aug 2024 23:27:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</guid>
+      <description></description>
+    </item>
     <item>
       <title>cmu binary bomb phase 3</title>
       <link>http://localhost:1313/posts/cmu-bb/cmu-bb-3/</link>

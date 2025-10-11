@@ -9,15 +9,27 @@
     <lastmod>2025-10-10T16:02:22-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2024-08-16T15:16:00-04:00</lastmod>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</loc>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/cmu-binary-bomb/</loc>
-    <lastmod>2024-08-16T15:16:00-04:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-3/</loc>
-    <lastmod>2024-08-16T15:16:00-04:00</lastmod>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/reverse-engineering/</loc>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2024-08-17T23:27:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</loc>
+    <lastmod>2024-08-16T23:27:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-3/</loc>
     <lastmod>2024-08-16T15:16:00-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-2/</loc>
@@ -29,6 +41,9 @@
     <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-0/</loc>
     <lastmod>2024-08-15T23:19:00-04:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/buffer-overflow/</loc>
+    <lastmod>2024-08-09T23:32:00-04:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/categories/pwnable/</loc>
     <lastmod>2024-08-09T23:32:00-04:00</lastmod>
   </url><url>
@@ -38,14 +53,8 @@
     <loc>http://localhost:1313/posts/pwnable/fd/</loc>
     <lastmod>2024-08-04T14:00:00-04:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</loc>
-  </url><url>
-    <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</loc>
-  </url><url>
     <loc>http://localhost:1313/platforms/</loc>
   </url><url>
     <loc>http://localhost:1313/series/</loc>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
   </url>
 </urlset>

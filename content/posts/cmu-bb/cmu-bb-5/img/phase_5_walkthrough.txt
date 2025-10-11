@@ -1,0 +1,20 @@
+input1 = 3 -> 7 -> B -> D -> 9 -> 4 -> 8 -> 0 -> A -> 1 -> 2 -> E -> 6 -> F
+counter	=0    1    2    3    4    5    6    7    8    9   10   11   12   13
+
+We need counter to == 15 when input1 == 15 (F) , thus we need to find an input that can direct us to 3 for the second value
+
+3 is located at index 48, so if this calculation is correct, initial input of 5 should take us to 12, which should then direct us to 3, and proceed with the stream
+ending with input1 == F and count == F
+
+The correct stream should be 
+
+input1 = 5 -> 12 -> 3 -> 7 -> B -> D -> 9 -> 4 -> 8 -> 0 -> A -> 1 -> 2 -> E -> 6 -> F
+counter	=0     1    2    3    4    5    6    7    8    9   10   11   12   13    14   15
+
+For the final compare, we move our second input from rbp+84h into eax
+we then compare with rbp+24h, which if we look at the decompiled code in ghidra, we can 
+see this is the local variable that is var = var + input1[0] for revery new input1
+
+Looking at this in memory, we can see that with our input of 5, our counter + input1 reassignment are both F, leaving local_var 73 at the end.
+
+Theoreticallt, input of 5 and 73 should yield the result we want

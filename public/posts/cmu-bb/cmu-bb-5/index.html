@@ -3,7 +3,7 @@
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <title>
- | david
+cmu binary bomb phase 5 | david
 </title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -65,7 +65,7 @@
             <main class="main">
                 
 <div class="postWrapper">
-    <h1></h1>
+    <h1>cmu binary bomb phase 5</h1>
     
 
     
@@ -104,23 +104,142 @@
     <section class="postMetadata">
         <dl>
             
+                
+<dt>tags</dt>
+<dd><span></span>
+    <a href="/tags/reverse-engineering/">#reverse-engineering</a></dd>
             
+            
+            
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/cmu-binary-bomb/">cmu-binary-bomb</a></dd>
             
             
                 <dt>published</dt>
                  
                  
-                 <dd><time datetime="0001-01-01">0001-01-01</time></dd>
+                 <dd><time datetime="2024-08-17">2024-08-17</time></dd>
             
             
                 <dt>reading time</dt>
-                <dd>0 minutes</dd>
+                <dd>6 minutes</dd>
             
         </dl>
     </section>
     
     <div>
-        
+        <h3 id="phase-5">Phase 5!</h3>
+<blockquote>
+<p>This is the longest phase so far. I tried my best to explain my approach in a way it hopefully makes sense.
+{: .prompt-warning}</p></blockquote>
+<p>We are now on phase 5 of the infamous CMU Binary Bomb challenge.</p>
+<p>Let&rsquo;s begin!</p>
+<p><img src="img/func_5_asm.png" alt="phase_5_asm">
+<img src="img/func_5_asm2.png" alt="phase_5_asm2"></p>
+<p>Looking at the assembly, we can immediately start dissecting the relevant information</p>
+<p>There is a call to <code>sscanf()</code>, let&rsquo;s find out what kind of input this function is expecting</p>
+<p>Let&rsquo;s take the same steps as the last few phases, by analyzing the memory being loaded into <code>rdx</code> before we call <code>sscanf()</code></p>
+<p><img src="img/scanf_format_string_in_memory.png" alt="sscanf format string in memory"></p>
+<p>We can see here that <code>phase_5()</code> is expecting 2 integers</p>
+<p>Now to find out what the two integers are we need to look at the logic</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h]
+</span></span><span style="display:flex;"><span>and eax, <span style="color:#ae81ff">0F</span>h
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h]
+</span></span><span style="display:flex;"><span>mov eax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h]
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">44</span>h], eax
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>h], <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cmp dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h], <span style="color:#ae81ff">0F</span>h
+</span></span><span style="display:flex;"><span>je ...
+</span></span></code></pre></div><p>To make things short, it looks like we load our first input from memory, initialize some variables to 0, and compare our first input with 0xF. If these are a match, we take a jump to a place further down in the function</p>
+<p>If our first input does not match 0xF, we will continue</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>inc eax
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>], eax
+</span></span><span style="display:flex;"><span>movsxd rax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h]
+</span></span><span style="display:flex;"><span>lea rcx, memory[<span style="color:#ae81ff">7ff</span><span style="color:#ae81ff">732</span>c0f1d0]
+</span></span><span style="display:flex;"><span>mov eax, dword ptr [rcx<span style="color:#f92672">+</span>rax<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h], eax
+</span></span><span style="display:flex;"><span>mov eax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">64</span>h]
+</span></span><span style="display:flex;"><span>mov ecx, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>h]
+</span></span><span style="display:flex;"><span>add ecx, eax
+</span></span><span style="display:flex;"><span>mov eax, ecx
+</span></span><span style="display:flex;"><span>mov dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>h], eax
+</span></span></code></pre></div><p>It seems like we have some control flow based on the move from memory into <code>eax</code>, followed by increment and a move back into memory. It&rsquo;s probably halfway safe to assume this is a counter of some sort.</p>
+<p>Based on the pointer notation, it seems we are indexing a value from an array and moving it into <code>eax</code>, and then moving it into the memory of our initial input1.</p>
+<p>This is added with the value stored in [rbp+24h], and moved back into [rbp+24h]. This looks like a x = x+y for each iteration of the loop. Let&rsquo;s put this into Ghidra and take a closer look, as we need to find out what is being indexed in memory</p>
+<p><em>Note: I&rsquo;ve changed some variable names and added comments for readbility</em></p>
+<p><img src="img/func5_ghidra.png" alt="func_5_Ghidra"></p>
+<p>Here I have a decompiled view of what is going on, now let&rsquo;s dissect it</p>
+<p>At the top of the function we have</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>uint buff_1[<span style="color:#ae81ff">8</span>];
+</span></span><span style="display:flex;"><span>uint buff_2[<span style="color:#ae81ff">8</span>];
+</span></span></code></pre></div><p>which are the buffers <code>sscanf()</code> reads our input into</p>
+<p>Next we have a while loop</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">while</span> (buff_1[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xf</span>) {
+</span></span><span style="display:flex;"><span>	counter <span style="color:#f92672">=</span> counter<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>	buff_1[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#f92672">*</span>uint)(<span style="color:#f92672">&amp;</span>array<span style="color:#f92672">+</span>(longlong)(<span style="color:#66d9ef">int</span>)buff_1[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>);
+</span></span><span style="display:flex;"><span>	local_174 <span style="color:#f92672">=</span> local_174 <span style="color:#f92672">+</span> buff_1[<span style="color:#ae81ff">0</span>];
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><em>Note: moving forward, I am going to refer to <code>buff_1[0]</code> as <code>input1</code>. Same for the second input.</em></p>
+<p>Based on the above loop, it will loop until <code>input1</code> == 0xf, and for every iteration, our <code>counter</code> is incremented by 1. <code>input1</code> is the reassigned to a value in memory</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>buff_1[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#f92672">*</span>uint)(<span style="color:#f92672">&amp;</span>array<span style="color:#f92672">+</span>(longlong)(<span style="color:#66d9ef">int</span>)buff_1[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>);
+</span></span></code></pre></div><p>This is clearly indexing from the start of the array + (<code>input1</code>x4), but what is this array? Let&rsquo;s follow it in memory and take a look</p>
+<p><img src="img/array_in_ghidra.png" alt="array in Ghidra"></p>
+<p>From what I can tell, this array is randomized integers, which are spaced 4 bytes apart in memory.</p>
+<p>Why can&rsquo;t we just avoid this array and while loop altogether? Let&rsquo;s just pass in 0xF as <code>input1</code> and never even enter this while loop contraption</p>
+<p>Well, to avoid exploding we must satisfy the last &lsquo;if&rsquo; statement</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> ((counter <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0xf</span>) <span style="color:#f92672">||</span> (local_174 <span style="color:#f92672">!=</span> buff_2[<span style="color:#ae81ff">0</span>])){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">explode_bomb</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Meaning the code must iterate exactly 15 times through the while loop since</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>counter <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span></code></pre></div><p>at the start of the loop, and increments by 1 each iteration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>counter <span style="color:#f92672">=</span> counter <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><p>You may see where this is going, but there are essentially two conditions we must satisfy to pass this case. We need to iterate exactly 15 times to satisfy the <code>counter</code> check, and on the 15th iteration we need</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>buff_1[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>(<span style="color:#f92672">*</span>uint)(<span style="color:#f92672">&amp;</span>array<span style="color:#f92672">+</span>(longlong)(<span style="color:#66d9ef">int</span>)buff_1[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span>);
+</span></span></code></pre></div><p>to be assigned the value of <code>0xF</code> to exit the while loop.</p>
+<p>Once we satisfy these conditions, we can then pass the</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>local_174 <span style="color:#f92672">!=</span> buff_2[<span style="color:#ae81ff">0</span>]
+</span></span></code></pre></div><p>case by checking the memory at that location when we successfully exit the loop. That will give us our second expected input.</p>
+<p>So, how can we make this loop run <em>exactly</em> 15 times and land <em>exactly</em> on an index holding <code>0xF</code> to store in <code>input1</code>?</p>
+<p>I did this the old-fashioned way, by creating a map tracing what index leads to F, and working backwards from there to find the 15th value.</p>
+<p>Let&rsquo;s look at the array again</p>
+<p><img src="img/array_in_ghidra.png" alt="array in ghidra"></p>
+<p>The formula for calculating <code>input1</code> in the while loop above is
+essentially a pointer to the start of <code>array</code> + <code>input1</code>*4, which indexes the array using pointer notation.</p>
+<p>For example, if we pass in 0 for <code>input1</code>, our offset is 0 and <code>input1</code> would be the first value of the array (0Ah).</p>
+<p>Next calculation would be <code>array</code> + <code>40</code>, which would lead us to the 40th byte of this array.</p>
+<p>The map looks like this</p>
+<pre tabindex="0"><code>input1 = 3 -&gt; 7 -&gt; B -&gt; D -&gt; 9 -&gt; 4 -&gt; 8 -&gt; 0 -&gt; A -&gt; 1 -&gt; 2 -&gt; E -&gt; 6 -&gt; F
+counter	=0    1    2    3    4    5    6    7    8    9   10   11   12   13
+</code></pre><p>To pass this case, counter should == 15 when input1 == 15 (F) , so based on our above map, we need to find an input that can direct us to 3 for the second value of the map</p>
+<p>3 is located at index array[48], so if this calculation is correct, initial input of 5 should take us to array[20] which is 12, which should then direct us to array[48] which is 3, and proceed with the rest of the stream above, hopefully ending with input1 == F and count == F</p>
+<p>The correct stream should be</p>
+<pre tabindex="0"><code>
+input1 = 5 -&gt; 12 -&gt; 3 -&gt; 7 -&gt; B -&gt; D -&gt; 9 -&gt; 4 -&gt; 8 -&gt; 0 -&gt; A -&gt; 1 -&gt; 2 -&gt; E -&gt; 6 -&gt; F
+counter	=0     1    2    3    4    5    6    7    8    9   10   11   12   13    14   15
+</code></pre><p>Let&rsquo;s pass in our input of 5 x and watch <code>counter</code> and <code>input1</code>
+change</p>
+<p><img src="img/dd_rbp4_show_3_counter_2.png" alt="dd show 3 counter 2"></p>
+<p>Looking at the register view window, we see RAX == 3, and printing the memory storing the <code>counter</code> at [rbp+4], we can see it is 2.</p>
+<p>Next up should be <code>input1 == 7</code>, with <code>counter == 3</code></p>
+<p><img src="img/dd_rbp4_show_7_counter_3.png" alt="dd show 7 counter 3"></p>
+<p>This looks to be correct, we just need to confirm this exits the while loop and passes the first check.</p>
+<p>Let&rsquo;s confirm <code>input1 == 0xF</code> passes when exiting the loop</p>
+<p><img src="img/cmp_input1_index_0_with_F.png" alt="cmp index 0 with F"></p>
+<p>Great!</p>
+<p>Let&rsquo;s confirm <code>counter == 0xF</code> passes</p>
+<p><img src="img/after_input1_passes_cmp_counter_with_F.png" alt="after input 1 passes cmp counter"></p>
+<p>Wonderful.</p>
+<p>Now that we know <code>input1 == 5</code> is the first key, the last step is to find out what <code>input2</code> should be. This can be done by viewing the memory of <code>local_174</code> after exiting the loop, since that&rsquo;s what <code>input2</code> should be.</p>
+<p>Dumping the memory, we find our initial input of &lsquo;10&rsquo; at <code>[rbp+84h]</code> is being compared with &lsquo;0x73&rsquo; at, or 115 in decimal at <code>[rbp+24h]</code>.</p>
+<p><img src="img/final_cmp_dd_rbp84_with_input2.png" alt="final cmp dd rbp+84"></p>
+<p>Thus, our solution should be &lsquo;5 115&rsquo;. Let&rsquo;s give it a shot</p>
+<p><img src="img/phase_5_defused.png" alt="phase 5 defused"></p>
+<p>On to the last Phase! (hopefully)</p>
     </div>
 </div>
 

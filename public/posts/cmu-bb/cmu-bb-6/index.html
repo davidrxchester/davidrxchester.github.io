@@ -3,8 +3,8 @@
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <title>
-        Welcome to my blog!
-        </title>
+cmu binary bomb phase 6 | david
+</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
 
 
 
-<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+<link href="/css/style.min.8c1bbfbfba9b690dde7acc6201b6f872da06ba79c6ba315ee30dce973958c5a6.css" rel="stylesheet">
 
 
 
@@ -41,18 +41,18 @@
             <ul>
                 
                 <li>
-                    <a href="http://localhost:1313/categories" title="" >
-                        ~/Categories</a>
+                    <a href="http://localhost:1313/categories/" title="" >
+                        ~/categories</a>
                 </li>
                 
                 <li>
-                    <a href="http://localhost:1313/about" title="" >
-                        ~/About</a>
+                    <a href="http://localhost:1313/about/" title="" >
+                        ~/about</a>
                 </li>
                 
                 <li>
-                    <a href="http://localhost:1313/posts" title="" >
-                        ~/Posts</a>
+                    <a href="http://localhost:1313/posts/" title="" >
+                        ~/posts</a>
                 </li>
                 
             </ul>
@@ -65,10 +65,7 @@
             <main class="main">
                 
 <div class="postWrapper">
-    <h1></h1>
-    
-
-    
+    <h1>cmu binary bomb phase 6</h1>
     
 
     
@@ -107,24 +104,98 @@
     <section class="postMetadata">
         <dl>
             
+                
+<dt>tags</dt>
+<dd><span></span>
+    <a href="/tags/reverse-engineering/">#reverse-engineering</a></dd>
             
+            
+            
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/cmu-binary-bomb/">cmu-binary-bomb</a></dd>
             
             
                 <dt>published</dt>
                  
                  
-                 <dd><time datetime="0001-01-01">0001-01-01</time></dd>
+                 <dd><time datetime="2024-08-19">2024-08-19</time></dd>
             
             
                 <dt>reading time</dt>
-                <dd>0 minutes</dd>
+                <dd>3 minutes</dd>
             
         </dl>
     </section>
     
-
     <div>
-        
+        <h3 id="phase-6">Phase 6</h3>
+<p>We&rsquo;ve made it to <code>phase_6()</code>. It hasn&rsquo;t been easy, but we are here, suited up, ready to defuse the final bomb (hopefully).</p>
+<p>If you noticed my &lsquo;hopfully&rsquo; at the end of the last walk through, it&rsquo;s because I ran a string search on the <code>bomb.exe</code>, and I saw something alarming. It was something like <code>&quot;You've found the secret phase!&quot;</code>, which has been lingering in my mind ever since I found it. I&rsquo;ve seen no other evidence of a &lsquo;secret phase&rsquo;. Probably a skill issue. We&rsquo;ll see if it comes back to haunt us anywhere in this walk through.</p>
+<p>Let&rsquo;s begin</p>
+<p><img src="img/phase_6_asm.png" alt="asm1">
+<img src="img/phase_6_asm2.png" alt="asm2">
+<img src="img/phase_6_asm3.png" alt="asm3"></p>
+<p>I only see two function calls in this phase</p>
+<ul>
+<li><code>read_six_numbers()</code></li>
+<li><code>explode_bomb()</code></li>
+</ul>
+<p>and based on our previous encounter with <code>read_six_numbers()</code>, it&rsquo;s safe to say that this phase wants a specific sequence of 6 numbers</p>
+<p>After  the call to <code>read_six_numbers()</code>, we have a series of what appears to be loops.</p>
+<p>Let&rsquo;s open this up in Ghidra and take a closer look at the code</p>
+<p><img src="img/phase_6_ghidra.png" alt="phase_6_ghidra">
+<img src="img/phase_6_Ghidra2.png" alt="phase_6_Ghidra2"></p>
+<p>Getting straight into it, I see a for loop with a nested for loop</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> ((nums[i] <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">||</span> (nums[i] <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">6</span>)) {
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">explode_bomb</span>();
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> (j <span style="color:#f92672">=</span> i <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; j <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span>; j<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (nums[i] <span style="color:#f92672">==</span> nums[j]){
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">explode_bomb</span>()
+</span></span><span style="display:flex;"><span>		}
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here are the two conditions to pass the first check</p>
+<ul>
+<li>Our input must be [1, 6]</li>
+<li>We cannot have any repeating digits in our input</li>
+</ul>
+<p>This makes the challenge a bit easier since we are restricted to only numbers [1, 6], and they are all only used once</p>
+<p>It gets interesting once we arrive at the next sequence of for loops</p>
+<p>If you didn&rsquo;t spot it above, just before our call to <code>read_six_nums()</code>, we have this declaration</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>first_node_ptr <span style="color:#f92672">=</span> (<span style="color:#66d9ef">int</span><span style="color:#f92672">*</span>)<span style="color:#f92672">&amp;</span>node1;
+</span></span></code></pre></div><p>It appears to be a pointer to a node, but what kind of node?</p>
+<p><img src="img/nodes_mem_Ghidra.png" alt="nodes_mem_Ghidra"></p>
+<p>This appears to be a linked list with 6 nodes in it, which would explain the gnarly pointer notation used in the for loops below</p>
+<p><img src="img/node_comparison_loops_Ghidra.png" alt="nodes_compare_Ghidra"></p>
+<p>There is a lot going on here, but there is only one compare that leads to an explosion</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>var <span style="color:#f92672">&lt;</span> <span style="color:#f92672">**</span>(<span style="color:#66d9ef">int</span><span style="color:#f92672">**</span>)(var<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)) {
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">explode_bomb</span>();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Which appears to be iterating from 0-5, comparing the dereferenced value of node <strong>n &gt; n+1</strong>, and calling <code>explode_bomb()</code> if not true.</p>
+<p>We are going to assume our input has some impact on these nodes, otherwise how else can we possibly control if <code>node1 &gt; node2</code> if we <em>always</em> start with <code>node1</code> and cannot change the values?</p>
+<p>To understand the structure of these nodes, let&rsquo;s use WinDbg to take a closer look at the memory</p>
+<p>WinDbg has a function <code>dt &lt;structure&gt; &lt;addr&gt;</code> that can potentially display the breakdown of a structure such as a node, but it was not working for this. It did, however, confirm the addresses in which <code>node1</code>-<code>node6</code> reside</p>
+<p><img src="img/nodes_in_memory.png" alt="nodes_in_memory"></p>
+<p>If we dump the memory at these addresses, we can view breakdown of <code>node1</code>-<code>node6</code></p>
+<p><img src="img/nodes_memory_dump.png" alt="nodes_memory_dump"></p>
+<p>Based on this, we can easily see the structure of each node
+<code>&lt;value&gt; &lt;node number&gt; &lt;memory address&gt;</code></p>
+<p><code>Node 1: 0x212</code>
+<code>Node 2: 0x1c2</code>
+<code>Node 3: 0x215</code>
+<code>Node 4: 0x393</code>
+<code>Node 5: 0x3a7</code>
+<code>Node 6: 0x200</code></p>
+<p>If the goal is for <code>node</code> n &gt; n+1 for all nodes in the list, we need to order the nodes in descending order, which would be</p>
+<p><code>Node5</code> &gt; <code>Node4</code> &gt; <code>Node3</code> &gt; <code>Node1</code> &gt; <code>Node6</code> &gt; <code>Node2</code></p>
+<p>Seeing that the node numbers are [1,6] and do not repeat, this is most likely our password</p>
+<p><img src="img/phase_6_defused!.png" alt="phase_6_defused"></p>
+<p>We did it! There was obviously <em>alot</em> more work that went into solving this challenge, but I hope I made it at least halfway enjoyable to read/walk through.</p>
+<p>Until next time&hellip;</p>
     </div>
 </div>
 
@@ -133,12 +204,12 @@
 
 
         <footer class="footer">
-    <span>
-        © 2025 Built by 
-        <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
-    </span>
-</footer>
-
+    
+      <span>
+        © 2025 Built by <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
+      </span>
+    
+  </footer>
     </div>
 
 </body>

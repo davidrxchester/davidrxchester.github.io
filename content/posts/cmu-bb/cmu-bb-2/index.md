@@ -4,7 +4,7 @@ date = "2024-08-16T07:59:00-04:00"
 draft = false
 slug = "cmu-binary-bomb-phase-2"
 categories = ["cmu-binary-bomb"]
-featured_image = "img/computer.jpg"
+tags = ["reverse-engineering"]
 +++
 
 <!--more-->

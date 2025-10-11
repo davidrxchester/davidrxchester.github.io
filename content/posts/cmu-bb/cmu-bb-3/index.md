@@ -2,8 +2,8 @@
 title = "cmu binary bomb phase 3"
 date = "2024-08-16T15:16:00-04:00"
 draft = false
-categories = ["cmu binary bomb"]
-featured_image = "img/computer.jpg"
+categories = ["cmu-binary-bomb"]
+tags = ["reverse-engineering"]
 +++
 
 <!--more-->
