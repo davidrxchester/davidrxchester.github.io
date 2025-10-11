@@ -32,9 +32,6 @@ enableRobotsTXT = true
   showCategories = true
   description = "Welcome to my security blog. Feel free to connect with me below :)"
 
-  [params.styles]
-    color = "cyan"
-  
   [params.author]
     name = "david"
     avatar = "images/avatar.jpg"
@@ -59,7 +56,7 @@ enableRobotsTXT = true
     url = "https://app.hackthebox.com/users/2162131"
   
   [params.styles]
-    color = "orange"
+    color = "cyan"
 
 [menu]
   [[menu.header]]
