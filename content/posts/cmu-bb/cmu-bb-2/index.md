@@ -1,5 +1,5 @@
 +++
-title = "CMU Binary Bomb Lab Phase 2"
+title = "cmu binary bomb phase 2"
 date = "2024-08-16T07:59:00-04:00"
 draft = false
 slug = "cmu-binary-bomb-phase-2"

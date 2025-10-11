@@ -1,8 +1,7 @@
 +++
-title = "CMU Binary Bomb Lab Introduction"
+title = "cmu binary bomb lab introduction"
 date = "2024-08-15T23:19:00-04:00"
 draft = false
-slug = "cmu-binary-bomb-lab-introduction"
 categories = ["cmu-binary-bomb"]
 featured_image = "img/computer.jpg"
 +++

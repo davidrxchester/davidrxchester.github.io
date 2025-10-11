@@ -1,5 +1,5 @@
 +++ 
-title = "Introducing myself and file descriptors"
+title = "introducing myself and file descriptors"
 date = "2024-08-04T14:00:00-04:00"
 draft = false
 categories = ["pwnable"]
