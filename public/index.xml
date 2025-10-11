@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Welcome to my blog!</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Welcome to my blog!</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 10 Oct 2025 16:02:22 -0400</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Fri, 10 Oct 2025 16:02:22 -0400</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CMU Binary Bomb Lab Phase 3</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-bb-3/</link>
+      <pubDate>Fri, 16 Aug 2024 15:16:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-bb-3/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CMU Binary Bomb Lab Phase 2</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-2/</link>
+      <pubDate>Fri, 16 Aug 2024 07:59:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-2/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CMU Binary Bomb Lab Phase 1</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-1/</link>
+      <pubDate>Thu, 15 Aug 2024 23:19:00 -0600</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-1/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>CMU Binary Bomb Lab Introduction</title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-lab-introduction/</link>
+      <pubDate>Thu, 15 Aug 2024 23:19:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-lab-introduction/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Want to overflow buffers?</title>
+      <link>http://localhost:1313/posts/pwnable/bof/</link>
+      <pubDate>Fri, 09 Aug 2024 23:32:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/pwnable/bof/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Introducing myself and file descriptors</title>
+      <link>http://localhost:1313/posts/pwnable/fd/</link>
+      <pubDate>Sun, 04 Aug 2024 14:00:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/pwnable/fd/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-bb-4/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title></title>
+      <link>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

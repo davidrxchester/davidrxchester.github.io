@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Welcome to my blog!</title>
+    <link>http://localhost:1313/tags/c/</link>
+    <description>Recent content in C on Welcome to my blog!</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Aug 2024 23:32:00 -0400</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Want to overflow buffers?</title>
+      <link>http://localhost:1313/posts/want-to-overflow-buffers/</link>
+      <pubDate>Fri, 09 Aug 2024 23:32:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/want-to-overflow-buffers/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;&#xA;&lt;p&gt;This writeup will include a comprehensive walkthrough of the &lt;strong&gt;&amp;lsquo;bof&amp;rsquo;&lt;/strong&gt; room from the Toddler&amp;rsquo;s Bottle section on pwnable. If you don&amp;rsquo;t know about pwnable, it is a wargame site that hosts a collection of challenges regarding system exploitation. Check it out here → &#xA;&lt;a href=&#34;https://pwnable.kr&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;pwnable.kr&lt;/a&gt;&#xA;&lt;/p&gt;&#xA;&lt;p&gt;If you are here and have no clue what a buffer overflow is, my goal is to give you a good enough understanding of what it is and how it is exploited so that you can recreate it in your own environment.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

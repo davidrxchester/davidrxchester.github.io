@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>
+CMU Binary Bomb Lab Phase 2 | david
+</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.151.0">
+
+
+<link rel="canonical" href="http://localhost:1313/posts/cmu-bb/cmu-binary-bomb-phase-2/" >
+
+
+
+
+<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+    <div class="flexWrapper">
+        <header class="headerWrapper">
+    <div class="header">
+        <div>
+            <a class="terminal" href="/">
+                <span>dav1dsec@blog ~ $</span>
+            </a>
+        </div>
+        <input class="side-menu" type="checkbox" id="side-menu">
+        <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+        <nav class="headerLinks">
+            <ul>
+                
+                <li>
+                    <a href="http://localhost:1313/categories/" title="" >
+                        ~/Categories</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/about/" title="" >
+                        ~/About</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/posts/" title="" >
+                        ~/Posts</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <main class="main">
+                
+<div class="postWrapper">
+    <h1>CMU Binary Bomb Lab Phase 2</h1>
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    <section class="postMetadata">
+        <dl>
+            
+            
+            
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/cmu-binary-bomb/">Cmu Binary Bomb</a></dd>
+            
+            
+                <dt>published</dt>
+                 
+                 
+                 <dd><time datetime="2024-08-16">2024-08-16</time></dd>
+            
+            
+                <dt>reading time</dt>
+                <dd>4 minutes</dd>
+            
+        </dl>
+    </section>
+    
+    <div>
+        <p>Upon stepping into the <code>phase_2()</code> function, we see the initial register saves, stack allocation, what appears to be some base pointer linking, along with some other familiar instructions.</p>
+<p><img src="img/phase_2_asm.png" alt="phase_2">
+<em>phase_2</em></p>
+<p>After the boilerplate code we have a function call to a new function</p>
+<ul>
+<li><code>read_six_numbers</code>
+We can safely assume this function probably does what it says it does, but does it serve any other purpose? To find out, let&rsquo;s take a look at the assembly code</li>
+</ul>
+<p><img src="img/read_six_numbers_asm.png" alt="read_six">
+<em>read_six_numbers</em></p>
+<p>Looking at the only <code> cmp</code> instruction in <code>read_six_numbers()</code>, it looks like we are comparing the value from eax (moved to memory) with 6, and jumping over the <code>explode_bomb</code>() function if it is greater than or equal to. We can make an inference that this is what the code does, but what&rsquo;s with all of the instructions? The surplus of <code>add</code> and <code>mov</code> makes me think those may be red herrings designed to waste our time.</p>
+<p>Just before the call to <code>sscanf()</code>, we can see a string loaded to <code>rdx</code> and a pointer loaded to <code>rcx</code>.  Based on  Microsoft calling convention, I will assume <code>rcx</code> contains a pointer to our input, and <code>rdx</code> contains a format string, such as &ldquo;%d&rdquo;.</p>
+<p><img src="img/read_six_numbers_rbp+28h.png" alt="check_for_param">
+<em>look at top window</em></p>
+<p>Here we can confirm that our six numbers are being passed as a parameter to the function. Now let&rsquo;s confirm the function is designed to <em>verify</em> we have passed in at least 6 digits.</p>
+<p>To confirm this is all <code>read_six_strings()</code> does, let&rsquo;s try passing in less than 6 numbers and observe what happens.</p>
+<p><img src="img/read_six_numbers_explode.png" alt="less">
+<em>jump not taken</em></p>
+<p><img src="img/read_six_numbers_explode_input.png" alt="less_than_6">
+<em>boom</em></p>
+<p>Our inference seems to be correct. So we know we have to pass in 6 numbers for our input, but what six numbers? To find out, we will have to take a closer look at <code>phase_2()</code>.
+Once we are past our input validation function, we see a few other interesting pieces of code</p>
+<ul>
+<li>We see a series of jumps and compares throughout the function</li>
+<li>We also see several calls to explode_bomb function.</li>
+</ul>
+<p>So we know have to pass in 6 integers to survive the <code>read_six_numbers()</code>, let&rsquo;s see what happens if we pass in <code>1 2 3 4 5 6</code>.</p>
+<p>Here is another view of the <code>phase_2()</code> function.</p>
+<p><img src="img/phase_2_asm.png" alt="phase_2">
+<em>phase_2()</em></p>
+<p>Just after the call to <code>read_six_numbers()</code>, we have this series of instructions</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax, <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>imul rax, rax, <span style="color:#ae81ff">0</span> <span style="color:#75715e">//this zeros the register
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>cmp dword ptr [rbp<span style="color:#f92672">+</span>rax<span style="color:#f92672">+</span><span style="color:#ae81ff">28</span>h], <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>If there is one pattern I&rsquo;ve caught on to, espeically with Microsoft compiler, is that <code>imul</code> is often used to index some sort of array (or other structure). Earlier in the walk through we checked the values at [rbp+28h], and we confirmed that this was our input to be passed to <code>read_six_numbers()</code>. Since <code>rax</code> is now == 0, we can see this is an obvious comparison between our first integer passed and 1. Just below we have</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>je bomb<span style="color:#f92672">!</span> offset in func
+</span></span><span style="display:flex;"><span>call explode_bomb
+</span></span></code></pre></div><p>If we do not take the jump we will explode. This confirms our first input should be 1 always.</p>
+<p>Now what about the next 5 numbers?</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax, dword ptr[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>inc eax
+</span></span><span style="display:flex;"><span>mov dword ptr[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>], eax
+</span></span><span style="display:flex;"><span>cmp dword ptr[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>], <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>jge ...
+</span></span></code></pre></div><p>The above appears to take a value from memory, increment it, store it back in memory, and compare that with 6. This could be some control flow structure,  maybe a for loop or while loop going to 6.</p>
+<p>Next we see</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>movsxd rax, dword ptr[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>mov ecx, dword ptr[rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>]
+</span></span><span style="display:flex;"><span>dec ecx
+</span></span><span style="display:flex;"><span>movsxd rcx, ecx
+</span></span><span style="display:flex;"><span>mov ecx, dword ptr[rbp<span style="color:#f92672">+</span>rcx<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span><span style="color:#f92672">+</span><span style="color:#ae81ff">28</span>h]
+</span></span><span style="display:flex;"><span>shl ecx, <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>cmp dword ptr[rbp<span style="color:#f92672">+</span>rax<span style="color:#f92672">*</span><span style="color:#ae81ff">4</span><span style="color:#f92672">+</span><span style="color:#ae81ff">28</span>h]
+</span></span><span style="display:flex;"><span>je ...
+</span></span><span style="display:flex;"><span>call explode_bomb
+</span></span></code></pre></div><p>To sum this up, it looks like we take the value (possibly a counter) that we used in the previous comparison and move it into <code>rax</code> and <code>ecx</code>. <code>ecx</code> is decremented and moved with sign extension to <code>rcx</code>. It looks like we then access our input, but this time use <code>rcx x 4</code> as the offset into the input. We then bitwise shift left, which is the equivalent of multiply by 2. Finally, we compare another value in our input &lsquo;array&rsquo;, but this time use <code>rax x 4</code> as the offset into the input. <code>rax</code> is equal to <code>ecx</code> - 1 prior to the shift. If these are not equal we will explode. We can confirm this by checking a register view of our input from the above example</p>
+<p><img src="img/phase2_1_2_3_4_input_reg_view.png" alt="incorect">
+<em>look at top right window</em></p>
+<p>This confirms that <code>rcx</code> is being compared with <code>rax</code> x 2</p>
+<p><strong>The algorithm appears to be checking that (input[n-1]x2) == n, starting at input[1]</strong></p>
+<p>If this is the case, the expected input should be 1 2 4 8 16 32. Let&rsquo;s give it a try.</p>
+<p><img src="img/phase_2_success.png" alt="phase_defused">
+<em>success!</em></p>
+<p><img src="img/phase_2_correct_input_register_view.png" alt="correct">
+<em>look at top right window</em></p>
+<p>We can see that when <code>rax</code> is 0x6, <code>rcx</code> is 0x20, which is 32 decimal. <code>rax</code> was incremented again before our counter was compared with 6, so when it is 0x5, <code>rcx</code> is 32, therefore it certainly comparing input[n-1]x2 with input[n].</p>
+<p>On to phase 3!</p>
+    </div>
+</div>
+
+            </main>
+        </div>
+
+
+        <footer class="footer">
+    
+        <span>
+            © 2025 david, Built with
+            <a href="https://gohugo.io" class="footerLink">Hugo</a> and
+            <a href="https://github.com/LordMathis/hugo-theme-nightfall" class="footerLink">Nightfall</a> theme
+        </span>
+    
+</footer>
+    </div>
+
+</body>
+
+</html>

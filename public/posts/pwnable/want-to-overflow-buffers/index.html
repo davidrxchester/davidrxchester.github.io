@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>
+        Welcome to my blog!
+        </title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.151.0">
+
+
+<link rel="canonical" href="http://localhost:1313/posts/pwnable/want-to-overflow-buffers/" >
+
+
+
+
+<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+    <div class="flexWrapper">
+        <header class="headerWrapper">
+    <div class="header">
+        <div>
+            <a class="terminal" href="/">
+                <span>dav1dsec@blog ~ $</span>
+            </a>
+        </div>
+        <input class="side-menu" type="checkbox" id="side-menu">
+        <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+        <nav class="headerLinks">
+            <ul>
+                
+                <li>
+                    <a href="http://localhost:1313/categories" title="" >
+                        ~/Categories</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/about" title="" >
+                        ~/About</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/posts" title="" >
+                        ~/Posts</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <main class="main">
+                
+<div class="postWrapper">
+    <h1>Want to overflow buffers?</h1>
+    
+
+    
+    
+        <figure class="featured-image">
+            <img src="img/buff_ovf.svg" alt="Want to overflow buffers?">
+            
+        </figure>
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    <section class="postMetadata">
+        <dl>
+            
+            
+            
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/pwnable/">Pwnable</a></dd>
+            
+            
+                <dt>published</dt>
+                 
+                 
+                 <dd><time datetime="2024-08-09">2024-08-09</time></dd>
+            
+            
+                <dt>reading time</dt>
+                <dd>6 minutes</dd>
+            
+        </dl>
+    </section>
+    
+
+    <div>
+        <h2 id="introduction">Introduction</h2>
+<p>This writeup will include a comprehensive walkthrough of the &lsquo;bof&rsquo; room from the Toddler&rsquo;s Bottle section on pwnable. If you don&rsquo;t know about pwnable, it is a wargame site that hosts a collection of challenges regarding system exploitation. Check it out here &ndash;&gt;  
+<a href="https://pwnable.kr" target="_blank" rel="noopener">pwnable.kr</a>
+</p>
+<p>If you are here and have no clue what a buffer overflow is, my goal is to give you a good enough understanding of what it is and how it is exploited so that you can recreate it in your own environment.</p>
+<p>There are no direct prerequisites to this challenge, but a basic understanding of CPU architecture and assembly language will make your life easier. Here are two fantastic rooms from  
+<a href="https://tryhackme.com/dashboard" target="_blank" rel="noopener">TryHackMe</a>
+ that cover these:</p>
+<ul>
+<li>
+<a href="https://tryhackme.com/r/room/x8664arch" target="_blank" rel="noopener">x86 arch overview</a>
+</li>
+<li>
+<a href="https://tryhackme.com/r/room/x86assemblycrashcourse" target="_blank" rel="noopener">x86 assembly crash course</a>
+</li>
+</ul>
+<h2 id="challenge">Challenge</h2>
+<p><strong>&lsquo;Nana told me that buffer overflow is one of the most common software vulnerability.</strong>  <strong>Is that true?&rsquo;</strong></p>
+<p>This is the only tip we are given for the &lsquo;bof&rsquo; room description.</p>
+<p>We are given links to the source code (bof.c) and executable (bof), as well as the netcat command to get the flag once we solve this puzzle.</p>
+<p>Let&rsquo;s begin.</p>
+<h2 id="walkthrough">Walkthrough</h2>
+<p>Once you download the source code and executable, it&rsquo;s always a good idea to run it just to get an idea of how to approach the puzzle.</p>
+<p><img src="img/bof-nah.jpg" alt="initial run">
+<!-- raw HTML omitted --></p>
+<p>So the executable prints &lsquo;overflow me :&rsquo; and takes our input. Let&rsquo;s take a look at the source code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;string.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(<span style="color:#66d9ef">int</span> key){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span> overflowme[<span style="color:#ae81ff">32</span>];
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;overflow me : &#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gets</span>(overflowme);	<span style="color:#75715e">// smash me!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(key <span style="color:#f92672">==</span> <span style="color:#ae81ff">0xcafebabe</span>){
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Nah..</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> argv[]){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">func</span>(<span style="color:#ae81ff">0xdeadbeef</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Let&rsquo;s break this down to get a good idea of what&rsquo;s going on how we can solve this room:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> argv[]){
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">func</span>(<span style="color:#ae81ff">0xdeadbeef</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We have a standard C <code>main()</code> function that isn&rsquo;t too exciting. We call <code>func()</code>  passing &lsquo;0xdeadbeef&rsquo; as a parameter, and then return 0. Let&rsquo;s have a look at <code>func()</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">func</span>(<span style="color:#66d9ef">int</span> key){
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">char</span> overflowme[<span style="color:#ae81ff">32</span>];
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;overflow me : &#34;</span>);
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">gets</span>(overflowme);	<span style="color:#75715e">// smash me!
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span>(key <span style="color:#f92672">==</span> <span style="color:#ae81ff">0xcafebabe</span>){
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Nah..</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p><code>func()</code> breakdown:</p>
+<ul>
+<li>we can see this function takes in a single key as a parameter.</li>
+<li>we also have a buffer &lsquo;overflowme&rsquo; that has space for 32 characters</li>
+<li>prints a message &lsquo;overflow me :&rsquo;</li>
+<li>call <code>gets()</code> to read into our buffer</li>
+</ul>
+<!-- raw HTML omitted -->
+<p>When developing your own software, it is strongly encouraged (almost forced unless you just ignore the compiler&rsquo;s screams) to use <code>fgets()</code>, which reads a string from a file or input stream while allowing you to specify the number of bytes to read. This helps us better manage buffers and try to avoid vulnerabilities like the one we are exploiting today</p>
+<p>Here is a geeksforgeeks article that goes over both of these functions &ndash;&gt; 
+<a href="https://www.geeksforgeeks.org/fgets-gets-c-language/" target="_blank" rel="noopener">gets and fgets</a>
+</p>
+<p>Finally, we have a comparison between our &lsquo;key&rsquo; and &lsquo;0xcafebabe&rsquo;,</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">if</span>(key <span style="color:#f92672">==</span> <span style="color:#ae81ff">0xcafebabe</span>){
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">system</span>(<span style="color:#e6db74">&#34;/bin/sh&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">else</span>{
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">printf</span>(<span style="color:#e6db74">&#34;Nah..</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+</span></span><span style="display:flex;"><span>	}
+</span></span></code></pre></div><p>which will yield us a shell if they are a match.</p>
+<p>Now that we have an idea of whats going on, we can clearly see the goal. <code>func()</code> is called with the key &lsquo;0xdeadbeef&rsquo;, but we need key to evaluate == to &lsquo;0xcafebabe&rsquo;. Let&rsquo;s take a look at the structure of the file to get an idea of how we can make this happen.</p>
+<h3 id="analyzing-the-file">Analyzing the file</h3>
+<p>To do this, we will use 
+<a href="https://ghidra-sre.org/" target="_blank" rel="noopener">Ghidra</a>
+. If you aren&rsquo;t familiar with this tool, it is a software reverse engineering tool developed by the NSA.  Ghidra provides a suite of features for analyzing compiled code, including a disassembler, decompiler, and various debugging capabilities. It can be a bit overwhelming initially, but familiarizing yourself with some of it&rsquo;s features can be a huge help for future challenges like this one.</p>
+<p>Here we have a disassembled view of the <code>main()</code> function in Ghidra:
+<img src="img/main_ghidra.png" alt="main">
+<em>main function</em></p>
+<p>This isn&rsquo;t too useful for what we are trying to accomplish, but <code>main()</code> is typically where we would begin our analysis. The goal of overwriting &lsquo;buffer&rsquo; into &lsquo;key&rsquo; seems clear, but we need to take a closer look at <code>func()</code> to get an idea of how the variables are stored on the stack (or somewhere else).</p>
+<p>Here we have a disassembled view of <code>func()</code>:
+<img src="img/func_stack_ghidra.png" alt="func">
+<em>func function</em></p>
+<p><em>I am going off the notion that whoever has made it this far has some x86 assembly knowlege, so I will refrain from walking through the instructions.</em></p>
+<p>The information at the top tells us how these variables are organized at runtime. We can see here:
+<img src="img/func_stack_layout.png" alt="func_stack">
+<em>func() stack layout</em></p>
+<p>We have several variables stored on the functions stack, including key, buffer, and a variable we did not see in the source code, &lsquo;canary&rsquo;. I will save the details of stack canaries for another writeup I am in the process of doing, but to quickly summarize it:</p>
+<ul>
+<li>A stack canary is a security mechanism automatically inserted by the compiler to detect and/or stop buffer overflow attacks. This involves placing a small, random value (canary) between the stack buffer and control data (return address of the function most of the time).</li>
+</ul>
+<p><img src="/posts/pwnable/bof/stack_canary_check.png" alt="stack_canary">
+<em>Since the stack canary check is at the bottom of the function (after the if-else), we don&rsquo;t need to worry about it as we will get a shell before it is reached during execution</em></p>
+<p>Taking a closer look at how the variables are organized, we can see &lsquo;key&rsquo; will be stored at Stack[0x4], and buffer will be stored at Stack[-0x30]
+<img src="/posts/pwnable/bof/stack_close.png" alt="stack_closeup">
+<em>stack layout up close</em></p>
+<p>To translate, &lsquo;key&rsquo; is stored 4 bytes above EBP and buffer is stored 48 bytes below EBP. If we want to go from &lsquo;buffer&rsquo; to the beginning of key, we would need to overwrite 48+4 bytes. Let&rsquo;s confirm this by opening this in GDB and seeing where our input lands.</p>
+<h3 id="using-gdb-to-take-a-closer-look">Using GDB to take a closer look</h3>
+<p><em>I will also be using &lsquo;gef&rsquo;, otherwise known as &lsquo;GDB Enhanced Features&rsquo;, which gives us a bit more information and more debugging features than the standard. 
+<a href="https://github.com/hugsy/gef" target="_blank" rel="noopener">Here</a>
+ is the link if interested</em></p>
+<p>Let&rsquo;s start by creating a payload of 52 characters and passsing it as input:</p>
+<p><img src="img/input_passed_gdb.png" alt="input passed">
+<em>input passed to program</em></p>
+<p>We can then examine the memory to see if our input is stored as expected:
+<img src="img/at_deadbeef_gdb.png" alt="at deadbeef">
+<em>Note: &lsquo;Z&rsquo; has an ASCII value of &lsquo;5a&rsquo;</em></p>
+<p>Just as expected, we can see where our input starts and where it ends. We need to finish crafting the paylaod with our expected &lsquo;0xcafebabe&rsquo; appended to the Zs. This should yield us a &rsquo;true&rsquo; comparison in the <code>func()</code>, giving us our shell and hopefully a flag.</p>
+<p>Since our data is stored in little endian format, we need to be careful when crafting this to be sure the bytes are stored correctly.</p>
+<p><img src="img/craft_payload.png" alt="craft payload">
+<em>craft payload using python</em></p>
+<p>We can then run the program in GDB again, but this time pass our new payload as the input</p>
+<p><img src="img/passed_payload.png" alt="pass input">
+<em>passing payload</em></p>
+<p>And then re-examine the memory to see if our attempt was successful</p>
+<p><img src="img/success_gdb.png" alt="success">
+<em>examine memory</em></p>
+<p><strong>Success!</strong></p>
+<p>We can see that we successfully overwrote the memory address that previously contained &lsquo;0xdeadbeef&rsquo; to now store &lsquo;0xcafebabe&rsquo;. All that is left to do now is run this with the netcat command we were given and retreive our flag.</p>
+<p><img src="img/shell.png" alt="shell">
+<em>shell given</em></p>
+<p>I redacted the flag from the photo to hopefully encourage others to try this exploit out themselves.</p>
+<h3 id="summary">Summary</h3>
+<p>If you made it here, congratulations. This challenge, while not extremely tricky, took several steps to complete. We started with analyzing the binary file, examining the stack layout using Ghidra, and examining our input in memory using GDB before finally crafting our payload. I sincerely hope you enjoyed working through this room with me.</p>
+<p>Stay tuned for more pwnable rooms! :D</p>
+    </div>
+</div>
+
+            </main>
+        </div>
+
+
+        <footer class="footer">
+    <span>
+        © 2025 Built by 
+        <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
+    </span>
+</footer>
+
+    </div>
+
+</body>
+
+</html>

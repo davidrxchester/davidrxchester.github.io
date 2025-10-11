@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>
+        Welcome to my blog!
+        </title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.151.0">
+
+
+<link rel="canonical" href="http://localhost:1313/posts/cmu-bb/cmu-bb-1/" >
+
+
+
+
+<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+    <div class="flexWrapper">
+        <header class="headerWrapper">
+    <div class="header">
+        <div>
+            <a class="terminal" href="/">
+                <span>dav1dsec@blog ~ $</span>
+            </a>
+        </div>
+        <input class="side-menu" type="checkbox" id="side-menu">
+        <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+        <nav class="headerLinks">
+            <ul>
+                
+                <li>
+                    <a href="http://localhost:1313/categories" title="" >
+                        ~/Categories</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/about" title="" >
+                        ~/About</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/posts" title="" >
+                        ~/Posts</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <main class="main">
+                
+<div class="postWrapper">
+    <h1></h1>
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    <section class="postMetadata">
+        <dl>
+            
+            
+            
+            
+                <dt>published</dt>
+                 
+                 
+                 <dd><time datetime="0001-01-01">0001-01-01</time></dd>
+            
+            
+                <dt>reading time</dt>
+                <dd>3 minutes</dd>
+            
+        </dl>
+    </section>
+    
+
+    <div>
+        <h1 id="introduction"><strong>Introduction</strong></h1>
+<p>Welcome to the beginning of the Binary Bomb lab walkthrough. I am going to give a comprehensive review of my strategy and through process when going through this challenge, but I am going to refrain from walking through <em>every</em> individual instruction.</p>
+<h3 id="phase-1">Phase 1</h3>
+<p>When we run the binary bomb program, we are met with a message: &ldquo;Welcome to my fiendish little bomb. You have 6 phases with which to blow yourself up. Have a nice day!&rdquo;
+<img src="img/phase_1_take_input.png" alt="initial_run">
+<em>initial execution</em></p>
+<p>Well, let&rsquo;s give it some input and see what happens.
+<img src="img/phase_1_explosion.png" alt="hello_world">
+<em>boom</em></p>
+<p>Our binary bomb has exploded. We need to investigate this and see what it is they want from us. Let&rsquo;s do some dynamic analysis using WinDbg and take a look at the main function.</p>
+<p><img src="img/phase_1_printfs.png" alt="main_area"></p>
+<p>Initially this is alot to digest, but we can start to take step through the code while it executes to get an idea of what is happening. We see a few &rsquo;lea&rsquo; instructions that seem to load our initial message pointers into registers, followed by a few calls to <code>printf()</code>. We can safely assume these are printing the welcome message we see. There is a call to <code>read_line()</code> which most likely taking the input we give. We also see a call to <code>phase_1()</code> followed by a call to <code>phase_defused()</code>. These two functions are of interest to us. Let&rsquo;s take a closer look at <code>phase_1()</code></p>
+<p><img src="img/phase_1_function_asm.png" alt="phase_1">
+<em>phase 1 asm</em></p>
+<p>Thankfully, this seems to be a pretty small function. We see some initial stack setup code (alignment, storing callee-store registers, etc) along with a few function calls</p>
+<ul>
+<li><code>strings_not_equal()</code></li>
+<li><code>explode_bomb()</code></li>
+</ul>
+<p>We&rsquo;re gonna go out on a limb and guess that <code>strings_not_equal()</code> takes in two strings, compares each byte, and returns if they are equal. This function is followed by a <code>test eax, eax</code> which performs a bitwise &lsquo;&amp;&rsquo; operation on the register. The result is then used in <code>je ... </code>, which ultimately checks if the zero flag is set. If this flag is not set, the jump is not taken and the bomb explodes.</p>
+<p>We can clearly see a <code>lea rdx, 7ff73274c1f8</code>, followed by a <code>mov rcx, qword ptr[rbp+0E0h]</code>. RCX and RDX are used for passing parameters in Windows compiler, so this is most likely our input and the expected string being loaded into memory. Let&rsquo;s take a look at these two memory locations and see if this is correct
+<img src="img/phase_1_strings_memory.png" alt="memory_strings"></p>
+<p>There is the answer to phase_1 in plain text :0</p>
+<p><strong>&ldquo;I am just a renegade hockey mom.&rdquo;</strong> seems to be like the input phase 1 is expecting. Let&rsquo;s give it a go</p>
+<p><img src="img/phase_1_defused.png" alt="defused">
+<em>phase 1 defused</em></p>
+<p>We can also see where we are in our <code>main()</code> function after successfully passing phase 1</p>
+<p><img src="img/phase_1_passed.png" alt="passed"></p>
+<p>On to phase 2!</p>
+
+    </div>
+</div>
+
+            </main>
+        </div>
+
+
+        <footer class="footer">
+    <span>
+        © 2025 Built by 
+        <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
+    </span>
+</footer>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>
+CMU Binary Bomb Lab Phase 3 | david
+</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+
+<meta name="generator" content="Hugo 0.151.0">
+
+
+<link rel="canonical" href="http://localhost:1313/posts/cmu-bb/cmu-bb-3/" >
+
+
+
+
+<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+    <div class="flexWrapper">
+        <header class="headerWrapper">
+    <div class="header">
+        <div>
+            <a class="terminal" href="/">
+                <span>dav1dsec@blog ~ $</span>
+            </a>
+        </div>
+        <input class="side-menu" type="checkbox" id="side-menu">
+        <label class="hamb" for="side-menu"><span class="hamb-line"></span></label>
+        <nav class="headerLinks">
+            <ul>
+                
+                <li>
+                    <a href="http://localhost:1313/categories/" title="" >
+                        ~/Categories</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/about/" title="" >
+                        ~/About</a>
+                </li>
+                
+                <li>
+                    <a href="http://localhost:1313/posts/" title="" >
+                        ~/Posts</a>
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="content">
+            <main class="main">
+                
+<div class="postWrapper">
+    <h1>CMU Binary Bomb Lab Phase 3</h1>
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+
+    
+    <section class="postMetadata">
+        <dl>
+            
+            
+            
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/cmu-binary-bomb/">Cmu Binary Bomb</a></dd>
+            
+            
+                <dt>published</dt>
+                 
+                 
+                 <dd><time datetime="2024-08-16">2024-08-16</time></dd>
+            
+            
+                <dt>reading time</dt>
+                <dd>2 minutes</dd>
+            
+        </dl>
+    </section>
+    
+    <div>
+        <p><img src="img/phase_3_func_1.png" alt="ss_1">
+<em>1/2</em>
+<img src="img/phase_3_func_3.png" alt="ss_3">
+<em>2/2</em></p>
+<p>Right off the bat we can see our boilerplate instructions and just ignore those. They stress us out for no reason.</p>
+<p>We also see a function call to</p>
+<ul>
+<li><code>sscanf()</code></li>
+<li><code>explode_bomb()</code></li>
+</ul>
+<p><code>sscanf()</code> is used to extract data from strings, and looking at it&rsquo;s 
+<a href="https://www.tutorialspoint.com/c_standard_library/c_function_sscanf.htm" target="_blank" rel="noopener">prototype</a>
+, we can see it takes at least 2 parameters.</p>
+<ul>
+<li>First is the char pointer to our input</li>
+<li>The second should be the format of the data we are attempting to extract.</li>
+</ul>
+<p>To find out what kind of data <code>phase_3()</code> wants, let&rsquo;s take a look at the parameters being passed to <code>sscanf()</code></p>
+<p><img src="img/phase_4_rdx_format_string_scanf.png" alt="rdx_fmt_str"></p>
+<p>This function is expecting two numbers. Great, let&rsquo;s continue stepping through.</p>
+<p>It looks like the return value of <code>sscanf()</code> is moved to memory and then compared with 2. If it is not &lsquo;greater than or equal&rsquo;, we are going to explode
+<img src="img/scanf_cmp.png" alt="scanf_cmp"></p>
+<p>This confirms we must pass in 2 numbers for this challenge.</p>
+<p>After jumping over the first call to <code>explode_bomb()</code>, there is a value loaded from [rbp+4] being compared with 7. This is our first input being compared with 7, and if it is &lsquo;above&rsquo;, we will take a jump to a call to <code>explode_bomb()</code></p>
+<p>We can observe this here
+<img src="img/first_cmp_7.png" alt="cmp_7"></p>
+<p>Thus we can infer our first input should be no greater than 7.</p>
+<p>Continuing through the code, we see yet another comparison between [rbp+4], 5. This time we will take a jump to another call to <code>explode_bomb()</code> if our input is greater than 5.</p>
+<p><img src="img/phase_3_compare_with_5.png" alt="cmp_5"></p>
+<p>Once we survive this cmp/jump, we come accross one last comparison in this function
+<img src="img/phase_3_func_3.png" alt="last_cmp"></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span>mov eax, dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">24</span>h]
+</span></span><span style="display:flex;"><span>cmp dword ptr [rbp<span style="color:#f92672">+</span><span style="color:#ae81ff">44</span>h], eax
+</span></span><span style="display:flex;"><span>je ... which skips the call to <span style="color:#a6e22e">explode_bomb</span>()
+</span></span></code></pre></div><p>Printing the memory at [rbp+24h], we can observe our second input stored in memory. Printing [rbp+44h], we can see the expected number</p>
+<p><img src="img/phase_3_second_ans_memory.png" alt="second_ans_memory"></p>
+<p>If we haven&rsquo;t made a mistake along the way, it looks like our first number can be 0-5, and our second input must be &lsquo;0xffffffe6&rsquo;, which equates to -26 in it&rsquo;s signed twos complement form.</p>
+<p>Let&rsquo;s pass in 1 and &lsquo;0xffffffe6&rsquo; and see what happens</p>
+<p><img src="img/phase_3_final_cmp_true.png" alt="final_cmp">
+<em>top right window</em></p>
+<p>Viewing the registers window in the top right, we can see EAX successfully has the value the phase is expecting.</p>
+<p><img src="img/phase_3_terminal_passed.png" alt="defused">
+<em>success!</em></p>
+<p>On to phase 4!</p>
+    </div>
+</div>
+
+            </main>
+        </div>
+
+
+        <footer class="footer">
+    
+        <span>
+            © 2025 david, Built with
+            <a href="https://gohugo.io" class="footerLink">Hugo</a> and
+            <a href="https://github.com/LordMathis/hugo-theme-nightfall" class="footerLink">Nightfall</a> theme
+        </span>
+    
+</footer>
+    </div>
+
+</body>
+
+</html>

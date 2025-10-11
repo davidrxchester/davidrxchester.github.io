@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>File-Descriptors on Welcome to my blog!</title>
+    <link>http://localhost:1313/tags/file-descriptors/</link>
+    <description>Recent content in File-Descriptors on Welcome to my blog!</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Aug 2024 14:00:00 -0400</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/file-descriptors/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Introducing myself and file descriptors</title>
+      <link>http://localhost:1313/posts/pwnable-fd-intro-file-descriptors/</link>
+      <pubDate>Sun, 04 Aug 2024 14:00:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/pwnable-fd-intro-file-descriptors/</guid>
+      <description>&lt;!-- raw HTML omitted --&gt;&#xA;&lt;h2 id=&#34;introduction&#34;&gt;&lt;strong&gt;Introduction&lt;/strong&gt;&lt;/h2&gt;&#xA;&lt;p&gt;Hello, my name is David. I am a senior Computer Science student who, like most who will probably read this, spend way too much time on computers. I have found myself increasingly interested in research and take way too many notes to not have somewhere to share them with the world. I think it&amp;rsquo;s time to create somewhere to talk about these things that excite me with hopes that they will excite you, too. Enough about me, but if you&amp;rsquo;d like to connect, feel free to add me on LinkedIn. Today I am going to do a writeup on a fairly easy room from &#xA;&lt;a href=&#34;https://pwnable.kr&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;pwnable&lt;/a&gt;&#xA;. I did this room toward the beginning of this summer and I personally really enjoyed the bite (or byte) sized challenge it offered. Without further ado,&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
