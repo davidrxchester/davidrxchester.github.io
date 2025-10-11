@@ -60,17 +60,17 @@ enableRobotsTXT = true
 
 [menu]
   [[menu.header]]
-    name = "Posts"
+    name = "posts"
     weight = 0
     url = "/posts/"
   
   [[menu.header]]
-    name = "Categories"
+    name = "categories"
     weight = 1
     url = "/categories/"
   
   [[menu.header]]
-    name = "About"
+    name = "about"
     weight = 2
     url = "/about/"
 

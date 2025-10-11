@@ -3,8 +3,8 @@
 
 <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
     <title>
-        Welcome to my blog!
-        </title>
+cmu binary bomb lab introduction | david
+</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
 
 
 
-<link href="/css/style.min.8f0fcae30d255f65600e5224cac81677ba394994b80f927f75dc2b5609f6cc57.css" rel="stylesheet">
+<link href="/css/style.min.8c1bbfbfba9b690dde7acc6201b6f872da06ba79c6ba315ee30dce973958c5a6.css" rel="stylesheet">
 
 
 
@@ -41,18 +41,18 @@
             <ul>
                 
                 <li>
-                    <a href="http://localhost:1313/categories" title="" >
-                        ~/Categories</a>
+                    <a href="http://localhost:1313/categories/" title="" >
+                        ~/categories</a>
                 </li>
                 
                 <li>
-                    <a href="http://localhost:1313/about" title="" >
-                        ~/About</a>
+                    <a href="http://localhost:1313/about/" title="" >
+                        ~/about</a>
                 </li>
                 
                 <li>
-                    <a href="http://localhost:1313/posts" title="" >
-                        ~/Posts</a>
+                    <a href="http://localhost:1313/posts/" title="" >
+                        ~/posts</a>
                 </li>
                 
             </ul>
@@ -65,10 +65,7 @@
             <main class="main">
                 
 <div class="postWrapper">
-    <h1></h1>
-    
-
-    
+    <h1>cmu binary bomb lab introduction</h1>
     
 
     
@@ -109,22 +106,46 @@
             
             
             
+                
+<dt>categories</dt>
+<dd><span></span>
+    <a href="/categories/cmu-binary-bomb/">cmu-binary-bomb</a></dd>
+            
             
                 <dt>published</dt>
                  
                  
-                 <dd><time datetime="0001-01-01">0001-01-01</time></dd>
+                 <dd><time datetime="2024-08-15">2024-08-15</time></dd>
             
             
                 <dt>reading time</dt>
-                <dd>0 minutes</dd>
+                <dd>3 minutes</dd>
             
         </dl>
     </section>
     
-
     <div>
-        
+        <blockquote>
+<p>This is a warning: This folder contains solutions and my personal walk through to this challenge. I do not want to spoil the fun for others, so only proceed if you have done the lab or do not plan to. Or read this and go do the lab after. Don&rsquo;t let me tell you how to live your life.
+{: .prompt-warning}</p></blockquote>
+<h2 id="introduction"><strong>Introduction</strong></h2>
+<p>The CMU Binary Bomb lab is a reverse engineering challenge derived from the Carnegie Mellon University (CMU) Computer Architecture course. Here is a link to the 
+<a href="https://csapp.cs.cmu.edu/" target="_blank" rel="noopener">course</a>
+ and also a link to the 
+<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15213-s02/www/applications/labs/lab2/bomblab.html" target="_blank" rel="noopener">Official Binary Bomb lab</a>
+. It is commonly used in computer security courses, such as 
+<a href="https://p.ost2.fyi/dashboard" target="_blank" rel="noopener">OpenSecurityTraining2</a>
+ Architecture 1001. The challenge presents itself as a binary executable that is known as a &lsquo;bomb&rsquo;. The goal of the challenge is to &lsquo;defuse&rsquo; the bomb by providing the correct input for each of the 6 phases of the challenge. Failure to input the correct answer results in the binary &rsquo;exploding&rsquo;, which is indicated by a message and metaphorically, a failure in the challenge. The purpose of this challenge is to be a &lsquo;weed out&rsquo; for introductory reverse engineering courses, as it is the final challenge faced in Architecture 1001, which is the gateway to many other reverse engineering courses provided by OpenSecurityTraining2.</p>
+<h3 id="some-background-on-the-challenge">Some background on the challenge</h3>
+<p>The Binary Bomb Lab is designed to reinforce knowledge of assembly language, the behavior of compiled code, and debugging techniques. Participants must use a combination of static and dynamic analysis tools, such as GDB (GNU Debugger) or other disassemblers, to dissect the binary, understand its logic, and discover the correct inputs for each phase.</p>
+<p>The challenge comprises 6 phases, each increasing in complexity. Solvers must methodically analyze the code, identify critical instructions, and derive the correct inputs needed to progress to the next phase. This process not only sharpens reverse engineering skills but also deepens the understanding of how high-level programming constructs are translated into machine code.</p>
+<p>The lab serves as a practical application of concepts learned in systems programming, including control flow, memory management, and data representation. By the end of the challenge, participants gain hands-on experience with debugging and reverse engineering techniques that are essential for careers in cybersecurity and software development.</p>
+<h4 id="tools-used">Tools used</h4>
+<p>Since I am already quite familiar with x64Dbg, Ghidra, and a few other tools, I decided to use 
+<a href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/" target="_blank" rel="noopener">WinDbg</a>
+ to get familiar with a new debugger.</p>
+<p>I hope this introduction piqued your interest on this challenge. If you like complex challenges, I highly encourage you to go attempt the CMU Binary Bomb before reading through my walk through. With that being said, the next 6 posts in this category will be my appraoch and solution to each of the phases.</p>
+<p>Enjoy &lt;3</p>
     </div>
 </div>
 
@@ -133,12 +154,12 @@
 
 
         <footer class="footer">
-    <span>
-        © 2025 Built by 
-        <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
-    </span>
-</footer>
-
+    
+      <span>
+        © 2025 Built by <a href="https://github.com/dav1dsec" class="footerLink">dav1dsec</a>
+      </span>
+    
+  </footer>
     </div>
 
 </body>
