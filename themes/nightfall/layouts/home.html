@@ -18,15 +18,12 @@
         <div class="content vertical">
             <main class="main">
                 <div class="indexWrapper">
-                    {{ if .Site.Params.author.avatarFirst }}
-                        {{ partial "avatar.html" . }}
-                    {{ end }}
                     <div>
                         <h1 class="indexHeader">{{ .Site.Params.author.name }}</h1>
                     </div>
-                    {{ if not .Site.Params.author.avatarFirst }}
-                        {{ partial "avatar.html" . }}
-                    {{ end }}
+                    {{ if .Site.Params.author.description }}
+                    <p class="indexDescription">{{ .Site.Params.author.description }}</p>
+                     {{ end }}
                     {{ if isset .Site.Params "social" }}
                         {{ partial "social.html" . }}
                     {{ end }}

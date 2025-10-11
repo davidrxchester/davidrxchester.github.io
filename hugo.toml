@@ -30,14 +30,12 @@ enableRobotsTXT = true
   showTags = true
   showAuthors = true
   showCategories = true
-  description = "Welcome to my security blog. Feel free to connect with me below :)"
 
   [params.author]
     name = "david"
-    avatar = ""
-    avatarSize = "size-m"
+    description = "Welcome to my security blog. Feel free to connect with me below :)"
     email = ""
-    avatarFirst = false
+   
   
   [[params.social]]
     key = 1
