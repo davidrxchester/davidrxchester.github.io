@@ -2,14 +2,35 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/about/</loc>
-    <lastmod>2025-10-10T16:02:22-04:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
-    <lastmod>2025-10-10T16:02:22-04:00</lastmod>
+    <loc>http://localhost:1313/tags/active-directory/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/</loc>
-    <lastmod>2024-08-19T23:27:00-04:00</lastmod>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/hackthebox/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/htb/season9/signed/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/season9/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/windows/</loc>
+    <lastmod>2025-10-13T23:32:00-04:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/about/</loc>
+    <lastmod>2025-10-10T16:02:22-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-6/</loc>
     <lastmod>2024-08-19T23:27:00-04:00</lastmod>
@@ -17,13 +38,7 @@
     <loc>http://localhost:1313/categories/cmu-binary-bomb/</loc>
     <lastmod>2024-08-19T23:27:00-04:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-08-19T23:27:00-04:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/reverse-engineering/</loc>
-    <lastmod>2024-08-19T23:27:00-04:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/tags/</loc>
     <lastmod>2024-08-19T23:27:00-04:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/cmu-bb/cmu-bb-5/</loc>

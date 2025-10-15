@@ -6,8 +6,15 @@
     <description>Recent content in Posts on Welcome to my blog!</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 19 Aug 2024 23:27:00 -0400</lastBuildDate>
+    <lastBuildDate>Mon, 13 Oct 2025 23:32:00 -0400</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>htb Season 9 - signed</title>
+      <link>http://localhost:1313/posts/htb/season9/signed/</link>
+      <pubDate>Mon, 13 Oct 2025 23:32:00 -0400</pubDate>
+      <guid>http://localhost:1313/posts/htb/season9/signed/</guid>
+      <description></description>
+    </item>
     <item>
       <title>cmu binary bomb phase 6</title>
       <link>http://localhost:1313/posts/cmu-bb/cmu-bb-6/</link>
