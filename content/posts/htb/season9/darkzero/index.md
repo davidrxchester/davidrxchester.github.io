@@ -20,4 +20,4 @@ tags = ["season9","windows","active-directory"]
 
 DarkZero is the second box of HackTheBox Season 9. It is a Hard difficulty Windows box that... is still active. Will post the writeup once the box is retired :)
 
-![signed.jpg](img/darkzero.png)
+![signed.jpg](img/DarkZero.png)
