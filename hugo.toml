@@ -1,4 +1,4 @@
-baseURL = "https://dav1dsec.github.io/"
+baseURL = "https://davidrxchester.github.io/"
 languageCode = "en-us"
 title = "Welcome to my blog!"
 theme = "nightfall"
@@ -21,7 +21,7 @@ preserveTaxonomyNames = true
 [params]
   darkmode = true
   favicon = "images/favicon.ico"
-  user = "dav1dsec"
+  user = "david"
   hostname = "blog"
   openLinksInNewTab = true
   displayDateFormat = "2006-01-02"
